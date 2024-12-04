@@ -61,7 +61,6 @@ echo "Welcome to the User Home Page, " . $_SESSION['user']['name'] . "!";
                      <div class="navbar-area">
                         <nav class="site-navbar">
                            <ul>
-
                               <li><a class="active" href="index.html">Home</a></li>
                               <li><a href="about.html">About</a></li>
                               <li><a href="services/service.html">Service</a></li>
@@ -69,8 +68,6 @@ echo "Welcome to the User Home Page, " . $_SESSION['user']['name'] . "!";
                                 <li><a href="news/map.html">Map</a></li>
                               <li><a href="news/news.html">Blog</a></li>
                               <li><a href="contact.html">Contact</a></li>
-                              <li><button id="darkModeButton" onclick="toggleDarkMode()">🌙</button></li>
-
                            </ul>
                            <button class="nav-toggler">
                            <span></span>
@@ -80,22 +77,7 @@ echo "Welcome to the User Home Page, " . $_SESSION['user']['name'] . "!";
                   </div>
                   <div class="col-md-2 padd_0 d_none">
                      <ul class="email text_align_right">
-                        <div class="user">
-                <p class="admin-name">
-                <?php
-                if (isset($_SESSION['user']) && $_SESSION['user']['user_type'] === 'admin') {
-                    echo " " . htmlspecialchars($_SESSION['user']['name']);
-                }
-                ?>
-            </p>
-           
-            <div class="img-case">
-            <a href="profileuser.php">
-    <img src="images/user.png" alt="Profile" class="small-profile">
-</a>
-<a href="logout.php" class="btn btn-danger">Logout</a>
-
-                    </div>
+                        <li><a href="log.php">Login</a>
                         </li>
                         <li><a href="Javascript:void(0)"><i class="fa fa-search" aria-hidden="true"></i>
                            </a>
@@ -173,8 +155,36 @@ echo "Welcome to the User Home Page, " . $_SESSION['user']['name'] . "!";
       </div>
       <!-- end banner -->
       <!-- about -->
-      
-                   
+      <div class="about">
+         <div class="container-fluid">
+            <div class="row d_flex">
+               <div class="col-lg-6 col-md-12">
+                  <div class="titlepage text_align_left">
+                     <span>About Us</span>
+                     <h2>AGRICULTURE MARKET</h2>
+                     <p>fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that itfact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that itfact th</p>
+                     <a class="read_more" href="about.html">Learn More</a>
+                  </div>
+               </div>
+               <div class="col-lg-6 col-md-12">
+                  <div class="row d_flex">
+                   <div class="col-md-7">
+                     <div class="about_img">
+                        <figure><img src="images/about_img.jpg" alt="#"/>
+                        </figure>
+                     </div>
+                   </div>
+                   <div class="col-md-5">
+                     <div class="about_img">
+                        <figure><img src="images/about_img1.jpg" alt="#"/>
+                        </figure>
+                     </div>
+                   </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
       <!-- end about -->
       <!-- services -->
       <div class="services">
@@ -570,73 +580,5 @@ echo "Welcome to the User Home Page, " . $_SESSION['user']['name'] . "!";
       <script src="js/owl.carousel.min.js"></script>
       <script src="js/bootstrap-datepicker.min.js"></script>
       <script src="js/custom.js"></script>
-      <style>.header {
-         position: relative;
-    display: flex; /* Align items horizontally */
-    align-items: center; /* Vertically align the image and button */
-    gap: 10px; /* Add space between the items */
-}
-body.dark-mode {
-            background-color: #333;
-            color: #f4f7f6;
-        }
-
-.small-profile {
-    cursor: pointer;
-    width: 40px; /* Adjust the size as needed */
-    height: 40px;
-}
-
-.logout-button {
-    text-decoration: none;
-    color: #000; /* Adjust color */
-    font-size: 16px;
-    padding: 5px 10px;
-    border: 1px solid #ccc; /* Optional styling for button */
-    border-radius: 5px; /* Rounded corners */
-    background-color: #6b7908; /* Background color */
-    cursor: pointer;
-}
-
-.logout-button:hover {
-    background-color: #6b7908; /* Change background on hover */
-}
-.dark-mode button {
-            background-color: #333;
-            color: white;
-        }
-
-        #darkModeButton {
-    position: absolute;
-    top: calc(40px - 1cm); /* Move the button 4 cm up from the initial position */
-    right: calc(20px + 1cm); /* Move the button 6 cm to the right */
-    background-color: transparent;
-    border: none;
-    font-size: 30px;
-    cursor: pointer;
-    z-index: 50;
-}
-
-
-
-#darkModeButton:hover {
-    transform: scale(1.2);
-}
-
-</style>
-<script>
-    // Toggle Dark Mode
-    function toggleDarkMode() {
-        const body = document.body;
-        const button = document.getElementById('darkModeButton');
-        
-        body.classList.toggle('dark-mode');
-        if (body.classList.contains('dark-mode')) {
-            button.textContent = '🌞'; // Change to sun emoji when dark mode is active
-        } else {
-            button.textContent = '🌙'; // Change to moon emoji when dark mode is inactive
-        }
-    }
-</script>
    </body>
 </html>

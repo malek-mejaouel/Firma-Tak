@@ -19,10 +19,17 @@ class AuthController {
         $email = trim($data['email']);
         $password = trim($data['password']);
         $user_type = trim($data['user_type']);
-
+    
+        // Check if email already exists
+        $existingUser = $this->userModel->read($email);
+        if ($existingUser) {
+            echo "<script>alert('Email already exists! Please choose another one.'); window.location.href = '../view/login.php';</script>";
+            return;
+        }
+    
         // Hash the password for security
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
+    
         if ($this->userModel->create($name, $email, $hashedPassword, $user_type)) {
             echo "<script>alert('Registration successful!'); window.location.href = '../view/login.php';</script>";
         } else {
@@ -35,25 +42,28 @@ class AuthController {
         $email = trim($data['email']);
         $password = trim($data['password']);
     
-        // Fetch user details from the database
         $user = $this->userModel->read($email);
     
         if ($user && password_verify($password, $user['password'])) {
-            // Store user data in session
             $_SESSION['user'] = $user;
     
             // Redirect based on user type
-            if ($user['user_type'] === 'admin') {
-                // Redirect to the admin dashboard if user is an admin
-                header('Location: ../view/dashboard.php');
-                exit();
-            } else {
-                // Redirect to the user homepage if user is not an admin
-                header('Location: ../view/index.php');
-                exit();
+            switch ($user['user_type']) {
+                case 'admin':
+                    header('Location: ../view/dashboard.php');
+                    break;
+                case 'fermier':
+                    header('Location: ../view/index.php');
+                    break;
+                case 'vendeur':
+                    header('Location: ../view/vendeur.php');
+                    break;
+                default:
+                    header('Location: ../view/index.php');
+                    break;
             }
+            exit();
         } else {
-            // If the credentials are invalid, display an error message
             echo "<script>alert('Invalid email or password'); window.location.href = '../view/login.php';</script>";
         }
     }
@@ -74,5 +84,7 @@ class AuthController {
     }
 
     // Delete user
+    // Add this in your controller or dashboard script
+
    
 }

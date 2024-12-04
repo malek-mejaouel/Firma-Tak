@@ -17,8 +17,7 @@ li {
     list-style: none;
 }
 
-h1,
-h2 {
+h1, h2 {
     color: #444;
 }
 
@@ -39,30 +38,7 @@ h3 {
     padding: 3px 8px;
     border: 2px solid #6b7908;
 }
-.edit-btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
 
-.edit-btn:hover {
-    background-color: #45a049;
-}
-
-.edit-btn:focus {
-    outline: none;
-}
-
-.edit-btn:active {
-    background-color: #3e8e41;
-    transform: scale(0.98);
-}
 .title {
     display: flex;
     align-items: center;
@@ -75,15 +51,14 @@ table {
     padding: 10px;
 }
 
-th,
-td {
+th, td {
     text-align: left;
     padding: 8px;
 }
 
 .side-menu {
     position: fixed;
-    background: #6b7908;;
+    background: #6b7908;
     width: 20vw;
     min-height: 100vh;
     display: flex;
@@ -128,7 +103,7 @@ td {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
 
@@ -214,7 +189,7 @@ td {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
 }
 
 .container .content .content-2 {
@@ -230,7 +205,7 @@ td {
     flex: 5;
     background: white;
     margin: 0 25px 25px 25px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
     display: flex;
     flex-direction: column;
 }
@@ -240,7 +215,7 @@ td {
     background: white;
     min-height: 50vh;
     margin: 0 25px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
     display: flex;
     flex-direction: column;
 }
@@ -274,7 +249,7 @@ td {
     }
 }
 
-@media screen and (max-width:536px) {
+@media screen and (max-width: 536px) {
     .brand-name h1 {
         font-size: 16px;
     }
@@ -307,5 +282,66 @@ td {
         max-width: 100%;
         height: 300px;
     }
-    
 }
+
+/* Dark Mode Global Styles */
+body.dark-mode {
+    background-color: #121212; /* Dark background */
+    color: #e0e0e0; /* Light text color */
+}
+
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h3 {
+    color: #e0e0e0; /* Light color for headers */
+}
+
+/* Buttons */
+body.dark-mode .btn {
+    background: #4b6b3f; /* Darker button background */
+    color: white;
+}
+
+body.dark-mode .btn:hover {
+    background: white;
+    color: #4b6b3f;
+    border: 2px solid #4b6b3f;
+}
+
+/* Sidebar */
+body.dark-mode .side-menu {
+    background: #2a3d26; /* Dark sidebar */
+}
+
+body.dark-mode .side-menu li:hover {
+    background: #444; /* Dark hover effect */
+    color: #6b7908;
+}
+
+/* Container */
+body.dark-mode .container {
+    background: #1e1e1e; /* Dark content background */
+}
+
+/* Header */
+body.dark-mode .container .header {
+    background: #333; /* Dark header */
+}
+
+/* Table */
+body.dark-mode table, 
+body.dark-mode th, 
+body.dark-mode td {
+    border-color: #444; /* Dark border color */
+}
+
+/* Content */
+body.dark-mode .container .content {
+    background: #1e1e1e; /* Dark content area */
+}
+
+
+
+
+
+

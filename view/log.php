@@ -9,7 +9,7 @@ $db = $database->getConnection();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['submit_signup'])) {
-        // Handle registration
+        // Registration logic
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $password = trim($_POST['password'] ?? '');
@@ -21,8 +21,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         }
 
+        // Check if the email already exists
+        $query = "SELECT * FROM user WHERE email = :email";
+        $stmt = $db->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+
+        if ($stmt->rowCount() > 0) {
+            // Email already exists
+            echo "<script>alert('Email is already registered! Please choose another email.'); window.history.back();</script>";
+            exit();
+        }
+
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
+        // Insert new user into the database
         $query = "INSERT INTO user (name, email, password, user_type) VALUES (:name, :email, :password, :user_type)";
         $stmt = $db->prepare($query);
 
@@ -32,63 +45,62 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(':user_type', $user_type);
 
         if ($stmt->execute()) {
+            // Store session data after successful registration
             $_SESSION['user'] = [
                 'name' => $name,
                 'email' => $email,
                 'user_type' => $user_type
             ];
 
+            // Redirect based on user type
             if ($user_type === 'admin') {
                 header('Location: ../view/dashboard.php');
-                exit();
-            } else {
+            } elseif ($user_type === 'fermier') {
                 header('Location: ../view/index.php');
-                exit();
+            } elseif ($user_type === 'vendeur') {
+                header('Location: ../view/vendeur.php');
             }
+            exit();
         } else {
             echo "<script>alert('Error during registration. Please try again.'); window.history.back();</script>";
         }
-      } elseif (isset($_POST['submit_login'])) {
-        // Handle login
+    }
+
+    if (isset($_POST['submit_login'])) {
+        // Login logic
         $email = trim($_POST['email'] ?? '');
         $password = trim($_POST['password'] ?? '');
-    
+
         // Fetch user by email
         $query = "SELECT * FROM user WHERE email = :email";
         $stmt = $db->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
-    
+
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
         if ($user) {
-            // Debug fetched user data
-            var_dump($user);
-    
             // Verify password
             if (password_verify($password, $user['password'])) {
-                echo "Password verified!";
+                // Store session data after successful login
                 $_SESSION['user'] = $user;
-    
+
                 // Redirect based on user type
                 if ($user['user_type'] === 'admin') {
                     header('Location: ../view/dashboard.php');
-                    exit();
-                } else {
+                } elseif ($user['user_type'] === 'fermier') {
                     header('Location: ../view/index.php');
-                    exit();
+                } elseif ($user['user_type'] === 'vendeur') {
+                    header('Location: ../view/vendeur.php');
                 }
+                exit();
             } else {
-                // Password mismatch
                 echo "<script>alert('Invalid password!'); window.history.back();</script>";
             }
         } else {
-            // User not found
             echo "<script>alert('User not found!'); window.history.back();</script>";
         }
-        exit();
     }
-    
 }
 ?>
 
@@ -121,11 +133,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="#" class="icon"><i class="fa-brands fa-instagram"></i></a>
                 <a href="#" class="icon"><i class="fa-brands fa-google"></i></a>
             </div>
-            <span>Use your email to register</span>
             <select name="user_type" required>
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-            </select>
+            <option value="" disabled selected>Select your type</option>
+            <option value="fermier">Fermier</option>
+            <option value="vendeur">Vendeur</option>
+            <option value="admin">Admin</option> <!-- Option added for admin -->
+        </select>
+            <span>Use your email to register</span>
             <input type="text" name="name" placeholder="Name" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
@@ -145,23 +159,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <span>Use your email to login</span>
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
+            <div class="forgot-password">
+            <a href="reset_password.php">Forgot Password?</a></div>
+
             <input type="submit" name="submit_login" value="Sign In">
         </form>
     </div>
     <div class="toogle-container">
-    <div class="toogle">
-        <div class="toogle-panel toogle-left">
-            <h1>bienvenu firma-tak!</h1>
-            <p>si vous avez un compte</p>
-            <button class="hidden" id="login">se connecter</button>
-        </div>
-        <div class="toogle-panel toogle-right">
-            <h1>salut !</h1>
-            <p>si vous avez un compte!</p>
-            <button class="hidden" id="register">s'inscrire</button>
+        <div class="toogle">
+            <div class="toogle-panel toogle-left">
+                <h1>bienvenu firma-tak!</h1>
+                <p>si vous avez un compte</p>
+                <button class="hidden" id="login">se connecter</button>
+            </div>
+            <div class="toogle-panel toogle-right">
+                <h1>salut !</h1>
+                <p>si vous avez un compte!</p>
+                <button class="hidden" id="register">s'inscrire</button>
+            </div>
         </div>
     </div>
-</div>
 </div>
 <script src="log.js"></script>
 

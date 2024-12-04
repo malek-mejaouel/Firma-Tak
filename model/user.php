@@ -44,7 +44,7 @@ class User {
         }
 
         $query = "SELECT * FROM user";
-        $stmt = $this->conn->prepare($query);  // Changed from $this->db to $this->conn
+        $stmt = $this->conn->prepare($query);  
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
