@@ -137,8 +137,11 @@ $users = $controller->listUser();
                 }
                 ?>
             </p>
+<<<<<<< HEAD
             <li><button id="darkModeButton" onclick="toggleDarkMode()">🌙</button></li>
 
+=======
+>>>>>>> 37c0a90981e4f7e7c4f904f49623766305824530
             <a href="logout.php" class="btn btn-danger">Logout</a>
             <img src="images/notifications.png" alt="">
                     <div class="img-case">
@@ -209,16 +212,24 @@ $users = $controller->listUser();
                     <label>Password (Leave blank to keep current):</label>
                     <input type="password" name="password" id="edit_password">
                     <label>User Type:</label>
+<<<<<<< HEAD
                     <label>User Type:</label>
 <select name="user_type" id="edit_user_type" required>
     <option value="admin">Admin</option>
     <option value="fermier">Fermier</option>
     <option value="vendeur">Vendeur</option>
 </select>
+=======
+                    <select name="user_type" id="edit_user_type" required>
+                        <option value="admin">Admin</option>
+                        <option value="user">User</option>
+                    </select>
+>>>>>>> 37c0a90981e4f7e7c4f904f49623766305824530
                     <button type="submit" name="edit_user">Save Changes</button>
                     <button type="button" onclick="closeEditForm()">Cancel</button>
                 </form>
             </div>
+<<<<<<< HEAD
 
             <!-- JavaScript for Modal -->
             <script>
@@ -248,6 +259,37 @@ $users = $controller->listUser();
     margin-bottom: 20px;
 }
 
+=======
+
+            <!-- JavaScript for Modal -->
+            <script>
+                function openEditForm(user) {
+                    document.getElementById('edit_user_id').value = user.id; // Set user ID
+                    document.getElementById('edit_name').value = user.name; 
+                    document.getElementById('edit_email').value = user.email; 
+                    document.getElementById('edit_user_type').value = user.user_type; 
+                    document.getElementById('edit_password').value = ''; // Clear password field
+                    document.getElementById('editModal').style.display = 'block';
+                }
+
+                function closeEditForm() {
+                    document.getElementById('editModal').style.display = 'none';
+                }
+            </script>
+
+        </div>
+    </div>
+
+    <script src="fonction.js"></script>
+    <style>
+       h1 {
+    font-size: 28px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+>>>>>>> 37c0a90981e4f7e7c4f904f49623766305824530
 table td button {
     padding: 6px 12px;
     font-size: 14px;
@@ -429,6 +471,7 @@ tbody tr td[colspan="5"] {
 }
 
     </style>
+<<<<<<< HEAD
     
 
 </style>
@@ -449,5 +492,7 @@ function toggleDarkMode() {
     }
 }
 </script>
+=======
+>>>>>>> 37c0a90981e4f7e7c4f904f49623766305824530
 </body>
 </html>
