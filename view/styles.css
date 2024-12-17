@@ -1,0 +1,310 @@
+/* Global reset for consistency */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+h1, h2 {
+    color: #444;
+}
+
+h3 {
+    color: #999;
+}
+
+.btn {
+    background: #6b7908;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+}
+
+.btn:hover {
+    color: #6b7908;
+    background: white;
+    padding: 3px 8px;
+    border: 2px solid #6b7908;
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 15px 10px;
+    border-bottom: 2px solid #999;
+}
+
+table {
+    padding: 10px;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+/* Side Menu */
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #6b7908;
+    width: 20vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.side-menu .brand-name {
+    height: 10vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #4b6b3f; /* Slightly darker background for brand */
+}
+
+.side-menu li {
+    font-size: 24px;
+    padding: 10px 40px;
+    color: white;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+}
+
+.side-menu li:hover {
+    background: rgb(0, 0, 0);
+    color: #6b7908;
+}
+
+.side-menu .brand-name h1 {
+    font-size: 24px;
+    color: white;
+}
+
+.container {
+    margin-left: 20vw; /* Offset container to the right of the side menu */
+    width: 80vw;
+    min-height: 100vh;
+    background: #f1f1f1;
+}
+
+.container .header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 80vw;
+    height: 10vh;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.container .header .nav {
+    width: 90%;
+    display: flex;
+    align-items: center;
+}
+
+.container .header .nav .user {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container .header .nav .user img {
+    width: 40px;
+    height: 40px;
+}
+
+.container .content {
+    margin-top: 10vh;
+    min-height: 90vh;
+    background: #f1f1f1;
+    padding: 20px;
+}
+
+.container .content .cards {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.container .content .cards .card {
+    width: 250px;
+    height: 150px;
+    background: white;
+    margin: 20px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+}
+
+.container .content .content-2 {
+    min-height: 60vh;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.container .content .content-2 .recent-payments {
+    min-height: 50vh;
+    flex: 5;
+    background: white;
+    margin: 0 25px 25px 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+    display: flex;
+    flex-direction: column;
+}
+
+.container .content .content-2 .new-students {
+    flex: 2;
+    background: white;
+    min-height: 50vh;
+    margin: 0 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
+    display: flex;
+    flex-direction: column;
+}
+
+.container .content .content-2 .new-students table td:nth-child(1) img {
+    height: 40px;
+    width: 40px;
+}
+
+@media screen and (max-width: 1050px) {
+    .side-menu li {
+        font-size: 18px;
+    }
+}
+
+@media screen and (max-width: 940px) {
+    .side-menu li span {
+        display: none;
+    }
+    .side-menu {
+        align-items: center;
+    }
+    .side-menu li img {
+        width: 40px;
+        height: 40px;
+    }
+    .side-menu li:hover {
+        background: #912F56;
+        padding: 8px 38px;
+        border: 2px solid white;
+    }
+}
+
+@media screen and (max-width: 536px) {
+    .brand-name h1 {
+        font-size: 16px;
+    }
+    .container .content .cards {
+        justify-content: center;
+    }
+    .side-menu li img {
+        width: 30px;
+        height: 30px;
+    }
+    .container .content .content-2 .recent-payments table th:nth-child(2),
+    .container .content .content-2 .recent-payments table td:nth-child(2) {
+        display: none;
+    }
+    .chart-container {
+        margin: 20px;
+        padding: 15px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .chart-container h3 {
+        color: #444;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+    
+    canvas {
+        max-width: 100%;
+        height: 300px;
+    }
+}
+
+/* Dark Mode Global Styles */
+body.dark-mode {
+    background-color: #121212; /* Dark background */
+    color: #254a1b; /* Light text color */
+}
+
+body.dark-mode h1, 
+body.dark-mode h2, 
+body.dark-mode h3 {
+    color: #22412e; /* Light color for headers */
+}
+
+/* Buttons */
+body.dark-mode .btn {
+    background: #4b6b3f; /* Darker button background */
+    color: rgb(48, 78, 51);
+}
+
+body.dark-mode .btn:hover {
+    background: white;
+    color: #4b6b3f;
+    border: 2px solid #4b6b3f;
+}
+
+/* Sidebar */
+body.dark-mode .side-menu {
+    background: #2a3d26; /* Dark sidebar */
+}
+
+body.dark-mode .side-menu li:hover {
+    background: #4c7c2e; /* Dark hover effect */
+    color: #6b7908;
+}
+
+/* Container */
+body.dark-mode .container {
+    background: #1e1e1e; /* Dark content background */
+}
+
+/* Header */
+body.dark-mode .container .header {
+    background: #333; /* Dark header */
+}
+
+/* Table */
+body.dark-mode table, 
+body.dark-mode th, 
+body.dark-mode td {
+    border-color: #444; /* Dark border color */
+}
+
+/* Content */
+body.dark-mode .container .content {
+    background: #28652d; /* Dark content area */
+}
