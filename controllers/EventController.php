@@ -49,5 +49,6 @@ class EventController {
             return "Failed to delete the event.";
         }
     }
+    
 }
 ?>

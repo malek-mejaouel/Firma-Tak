@@ -75,6 +75,15 @@ header.shadow .logo {
     gap: 10px;
     color:#6b7908;
 }
+body {
+    transition: background-color 0.3s, color 0.3s;
+}
+.countdown {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 10px;
+}
 
 
 .logo-container {
@@ -632,6 +641,32 @@ footer p{
         transform: scale(1.02);
         border-color: #007B5E;
     }
+    .event-box {
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+    
+    .event-title {
+        font-size: 20px;
+        color: #333;
+        margin-bottom: 10px;
+    }
+    
+    .participant-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .participant-item {
+        font-size: 16px;
+        color: #555;
+        padding: 5px 0;
+    }
+    
 }
 
 

@@ -27,8 +27,6 @@ const incomeChart = new Chart(incomeCtx, {
         }
     }
 });
-
-// Bar Chart for User Distribution
 const userCtx = document.getElementById('userChart').getContext('2d');
 const userChart = new Chart(userCtx, {
     type: 'bar',
@@ -51,3 +49,49 @@ const userChart = new Chart(userCtx, {
         }
     }
 });
+// Event Search Functionality
+document.getElementById('searchBtn').addEventListener('click', function() {
+    const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+    const events = document.querySelectorAll('.post-box'); // Assuming events are displayed in elements with class 'post-box'
+
+    events.forEach(function(event) {
+        const title = event.querySelector('.category').textContent.toLowerCase();
+        const description = event.querySelector('.post-date').textContent.toLowerCase();
+
+        if (title.includes(searchQuery) || description.includes(searchQuery)) {
+            event.style.display = ''; // Show matching events
+        } else {
+            event.style.display = 'none'; // Hide non-matching events
+        }
+    });
+});
+
+// Join Event Functionality
+function joinEvent(eventId) {
+    const participantName = prompt("Enter your name to join the event:");
+    const participantEmail = prompt("Enter your email:");
+    if (participantName && participantEmail) {
+        fetch('joinEvent.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                event_id: eventId,
+                name: participantName,
+                email: participantEmail
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert("Successfully joined the event!");
+                location.reload(); // Refresh to update participant list
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        })
+        .catch(error => console.error("Error:", error));
+    }
+}
+
+
+

@@ -21,6 +21,7 @@ ob_start();
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="../assets/style.css">
     <link rel="stylesheet" href="../assets/searchbar.css">
+    <link rel="stylesheet" href="../assets/dark.css">
     
 </head>
 
@@ -32,7 +33,10 @@ ob_start();
                 <a href="#" class="logo">FIRMA <span>-TAK</span></a>
             </div>
             <a href="#" class="login">Login</a>
+            <button id="theme-toggle" class="login">Switch Theme</button>
+            
         </div>
+        
     </header>
 
     <section class="home" id="home">
@@ -72,60 +76,67 @@ ob_start();
         </div>
     </section>
 
-    <h1 class="titleText,events-section container">Upcoming Events</h1>
-    <div class="post">
-            <?php 
-                // Filter upcoming events
-                $today = date('Y-m-d'); // Current date
-                $upcomingEvents = array_filter($events, function ($event) use ($today) {
-                    return $event['event_date'] >= $today;
-                });
-
-                // Sort events by date
-                usort($upcomingEvents, function ($a, $b) {
-                    return strtotime($a['event_date']) - strtotime($b['event_date']);
-                });
-
-                if (count($upcomingEvents) > 0):
-                    foreach ($upcomingEvents as $event): ?>
-                        <div class="post-box">
-                            <img src="<?php echo htmlspecialchars($event['image_path']); ?>" alt="Event Image" class="post-img">
-                            <h2 class="category"><?php echo htmlspecialchars($event['title']); ?></h2>
-                            <span class="post-date"><?php echo htmlspecialchars($event['event_date']); ?></span>
-                            <div class="profile">
-                                <button class="at" onclick="joinEvent(<?php echo $event['id']; ?>)">
-                                    Join Event
-                                </button>
-                                <span class="participant-count">
-                                    <?php echo count($participantController->listParticipantsByEvent($event['id'])); ?> Participants Joined
-                                </span>
-                            </div>
-                        </div>
-                    <?php endforeach; 
-                else: ?>
-                    <p>No upcoming events found.</p>
-                <?php endif; ?>
-        </div>
-    </section>
-
-    <section class="participants-section container" id="participants">
-        <h2 class="titleText">Participants</h2>
+    <section class="upcoming-section container">
+        <h2 class="titleText">Upcoming Events</h2>
         <div class="post">
-            <?php if (count($participants) > 0): ?>
-                <?php foreach ($participants as $participant): ?>
+            <?php
+            $today = date('Y-m-d');
+            $upcomingEvents = array_filter($events, fn($event) => $event['event_date'] >= $today);
+            usort($upcomingEvents, fn($a, $b) => strtotime($a['event_date']) - strtotime($b['event_date']));
+            ?>
+            <?php if (count($upcomingEvents) > 0): ?>
+                <?php foreach ($upcomingEvents as $event): ?>
                     <div class="post-box">
-                        <h2 class="category">Participant</h2>
-                        <a href="#" class="post-title"><?php echo htmlspecialchars($participant['name']); ?></a>
+                        <img src="<?php echo htmlspecialchars($event['image_path']); ?>" alt="Event Image" class="post-img">
+                        <h2 class="category"><?php echo htmlspecialchars($event['title']); ?></h2>
+                        <div class="countdown" data-event-date="<?php echo $event['event_date']; ?>"></div>
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <p>No participants found.</p>
+                <p>No upcoming events found.</p>
             <?php endif; ?>
         </div>
     </section>
 
-    <script>
-        document.getElementById('searchBtn').addEventListener('click', function() {
+
+    <section class="participants-section container" id="participants">
+    <h2 class="titleText">Participants</h2>
+    <div class="post">
+        <?php if (count($participants) > 0): ?>
+            <?php foreach ($participants as $participant): ?>
+                <div class="post-box">
+                    <h2 class="category">Participant</h2>
+                    <a href="#" class="post-title">
+                        <?php echo htmlspecialchars($participant['name']); ?> 
+                        - Joined: 
+                        <?php 
+                            $eventDetails = $controller->viewEvent($participant['event_id']); 
+                            echo htmlspecialchars($eventDetails['title']);
+                        ?>
+                    </a>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p>No participants found.</p>
+        <?php endif; ?>
+    </div>
+</section>
+            <script>
+                const toggleButton = document.getElementById('theme-toggle');
+toggleButton.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+});
+
+// Persist theme on reload
+window.addEventListener('load', () => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+});
+document.getElementById('searchBtn').addEventListener('click', function() {
     const searchQuery = document.getElementById('searchInput').value.toLowerCase();
     const events = document.querySelectorAll('.post-box'); // Assuming events are displayed in elements with class 'post-box'
 
@@ -141,32 +152,34 @@ ob_start();
     });
 });
 
-        function joinEvent(eventId) {
-            const participantName = prompt("Enter your name to join the event:");
-            const participantEmail = prompt("Enter your email:");
-            if (participantName && participantEmail) {
-                fetch('joinEvent.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        event_id: eventId,
-                        name: participantName,
-                        email: participantEmail
-                    }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        alert("Successfully joined the event!");
-                        location.reload(); // Refresh to update participant list
-                    } else {
-                        alert(`Error: ${data.message}`);
-                    }
-                })
-                .catch(error => console.error("Error:", error));
+// Join Event Functionality
+function joinEvent(eventId) {
+    const participantName = prompt("Enter your name to join the event:");
+    const participantEmail = prompt("Enter your email:");
+    if (participantName && participantEmail) {
+        fetch('joinEvent.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                event_id: eventId,
+                name: participantName,
+                email: participantEmail
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert("Successfully joined the event!");
+                location.reload(); // Refresh to update participant list
+            } else {
+                alert(`Error: ${data.message}`);
             }
-        }
-    </script>
+        })
+        .catch(error => console.error("Error:", error));
+    }
+}
+
+            </script>
 
     <footer>
         <div class="footer-container">
@@ -205,6 +218,8 @@ ob_start();
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="../assets/main.js"></script>
+    <script src="../assets/fonction.js"></script>
+    <script src="../assets/countdown.js"></script>
 </body>
 
 </html>
