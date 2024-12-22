@@ -1,6 +1,7 @@
 <?php
 require_once '../config/database.php';
 require_once '../controller/AuthController.php';
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -53,7 +54,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_user'])) {
 // Fetch users for display
 $users = $controller->listUser();
 
-?>
+// Récupérez les utilisateurs récents
+   // Assume $authController is an instance of the AuthController class
+   $authController = new AuthController($db);
+
+// Get the most recent user (make sure getRecentUser is returning data)
+$newUser = $authController->getRecentUser(); // This should now be assigned before use
+
+// Check if $newUser has data
+if ($newUser) {
+   // echo "User: " . htmlspecialchars($newUser['name']) . ", Email: " . htmlspecialchars($newUser['email']);
+} else {
+    echo "No new users.";
+}
+
+// Check if session messages exist and are an array
+if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+    $admin = $_SESSION['user'];  // Get the admin's profile data
+
+    // Get the user's profile picture (if any)
+    $profilePicture = !empty($admin['profile_picture']) ? $admin['profile_picture'] : 'default_profile_picture.png'; // Provide a default image if none exists
+
+    // You can now use $profilePicture and other session data
+} else {
+    // Handle case where session is not properly set
+    echo "No user session found.";
+}
+
+ 
+   // Now you can call getRecentUser
+
+    // Check if session messages exist and are an array
+    
+    $admin = $_SESSION['user']; 
+
+    // Get the user's profile picture (if any)
+    $profilePicture = !empty($admin['profile_picture']) ? $admin['profile_picture'] : 'uploads/default.jpg'; // Default profile picture if none set
+    ?>
+    
 
 <!DOCTYPE html>
 <html lang="en">
@@ -79,7 +117,7 @@ $users = $controller->listUser();
 
         
         .dark-mode {
-            background-color: #121212;
+            background-color: #6b7908;
             color: #6b7908;
         }
         
@@ -103,6 +141,94 @@ $users = $controller->listUser();
 
         /* Additional dark mode styles */
     </style>
+    <style>
+    .notifications {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 200px;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        padding: 10px;
+        z-index: 1;
+        right: 0;
+    }
+
+    .notifications:hover .dropdown-content {
+        display: block;
+    }
+
+    .dropdown-content h4 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .dropdown-content ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .dropdown-content ul li {
+        font-size: 14px;
+        margin: 5px 0;
+        color: #555;
+  
+    }
+    .search {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    gap: 10px; /* Optional: Space between input and button */
+    width: 100%; /* Full width */
+    max-width: 600px; /* Optional: Limit width if necessary */
+    margin: 0 auto; /* Center in the parent container */
+}
+
+/* Style for the label */
+.search-label {
+    font-size: 14px; /* Adjust font size */
+    margin-right: 10px; /* Space between label and input */
+}
+
+/* Style for the input */
+.search input {
+    padding: 8px;
+    font-size: 14px;
+    width: 200px; /* Adjust width of the input */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Style for the button */
+.search button {
+    padding: 8px;
+    background-color: #6b7908;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search button img {
+    width: 16px; /* Smaller search icon size */
+    height: 16px;
+}
+   
+</style>
+<style>
+    .messages img {
+        width: 24px; /* Adjust the width of the icon */
+        height: 24px; /* Adjust the height of the icon */
+        margin-right: 0.5cm; /* Move the icon to the left by 4cm */
+
+    }
+</style>
     
 </head>
 
@@ -112,52 +238,78 @@ $users = $controller->listUser();
             <img src="images/logos.png" alt="">&nbsp;<h2>FIRMA-TAK</h2>
         </div>
         <ul>
-            <a href="#"><li><img src="images/dashboard (2).png" alt="">&nbsp; <span>Dashboard</span> </li></a>
-            <a href="#"><li><img src="images/reading-book (1).png" alt="">&nbsp;<span>Offers</span> </li></a>
+            <a href="profile.php"><li><img src="images/reading-book (1).png" alt="">&nbsp;<span>PROFILE</span> </li></a>
             <a href="farmer.php"><li><img src="images/converted_image_2.png" alt="">&nbsp;<span>Statistics</span> </li></a>
-            <a href="#"><li><img src="images/white_image_revised.png">&nbsp;<span>Grocerers</span> </li></a>
-            <a href="#"><li><img src="images/payment.png" alt="">&nbsp;<span>Stock</span> </li></a>
-            <a href="#"><li><img src="images/help-web-button.png" alt="">&nbsp; <span>Help</span></li></a>
-            <a href="#"><li><img src="images/settings.png" alt="">&nbsp;<span>Settings</span> </li></a>
+            <a href="feedb.php"><li><img src="images/white_image_revised.png">&nbsp;<span>messages box</span> </li></a>
+            <a href="message.php"><li><img src="images/payment.png" alt="">&nbsp;<span>tri</span> </li></a>
+            <a href="pub.php"><li><img src="images/new.png" alt="">&nbsp; <span>pub settings</span></li></a>
+            <a href="http://localhost/usercrud/view/php/animalsindex.php"><li><img src="images/settings.png" alt="">&nbsp;<span>animals</span> </li></a>
+            <a href="http://localhost/usercrud/view/php/plantsindex.php"><li><img src="images/settings.png" alt="">&nbsp;<span>plants</span> </li></a>
+            <a href="listback.php"><li><img src="images/settings.png" alt="">&nbsp;<span>Events</span> </li></a>
         </ul>
+
     </div>
     <div class="container">
         <div class="header">
             <div class="nav">
                 <div class="search">
-                    <input type="text" placeholder="Search..">
-                    <button type="submit"><img src="images/search.png" alt=""></button>
+                <form method="POST" action="user_details.php">
+                <label for="search_term">Search for User: </label>
+
+    <input type="text" name="search_term" id="search_term" required>
+        <button type="submit"><img src="images/search.png" alt=""></button>
+
+
+    </form>
 
                 </div>
+                <div class="messages">
+            
+            
+
+                <div class="messages">
+    <!-- Wrap the image with an anchor tag to navigate to the messages page -->
+    <a href="usercrud/view/feedb.php"> <img src="images/email.png" alt="Messages" title="Go to Messages"> </a>
+    </a>
+</div>
+    
+</div>
                 <div class="user">
-                <p class="admin-name">
+               
+            <li><button id="darkModeButton" onclick="toggleDarkMode()">🌙</button></li>
+
+            <a href="logout.php" class="btn btn-danger">Logout</a>
+            <div class="notifications">
+                        <img src="images/notifications.png" alt="Notifications">
+                        <div class="dropdown-content">
+                            <h4>Recently Added Users</h4>
+                            <?php if ($newUser): ?>
+                                <ul>
+                                    <li><?php echo htmlspecialchars($newUser['name']) . " (" . htmlspecialchars($newUser['email']) . ")"; ?></li>
+                                </ul>
+                            <?php else: ?>
+                                <p>No new users.</p>
+                            <?php endif; ?>
+                        </div>
+                    </div> <div class="img-case">
+                        <img src="<?php echo htmlspecialchars($profilePicture); ?>" alt="Profile Picture" style="max-width: 150px;">
+                    </div>
+                    <p class="admin-name">
                 <?php
                 if (isset($_SESSION['user']) && $_SESSION['user']['user_type'] === 'admin') {
+                    
                     echo " " . htmlspecialchars($_SESSION['user']['name']);
+                    
                 }
                 ?>
             </p>
-<<<<<<< HEAD
-            <li><button id="darkModeButton" onclick="toggleDarkMode()">🌙</button></li>
-
-=======
->>>>>>> 37c0a90981e4f7e7c4f904f49623766305824530
-            <a href="logout.php" class="btn btn-danger">Logout</a>
-            <img src="images/notifications.png" alt="">
-                    <div class="img-case">
-                        <img src="images/user.png" alt="">
-                        <a href="profile.php"><img src="images/user.png" alt="Profile" style="cursor: pointer;"></a>
-
-                    </div>
                 </div>
             </div>
         </div>
         <div class="content">
             <h1>Admin Dashboard</h1>
 
-            <?php if (isset($message)): ?>
-                <p><?php echo htmlspecialchars($message); ?></p>
-            <?php endif; ?>
+          
 
             <table>
                 <thead>
@@ -212,24 +364,16 @@ $users = $controller->listUser();
                     <label>Password (Leave blank to keep current):</label>
                     <input type="password" name="password" id="edit_password">
                     <label>User Type:</label>
-<<<<<<< HEAD
                     <label>User Type:</label>
 <select name="user_type" id="edit_user_type" required>
     <option value="admin">Admin</option>
     <option value="fermier">Fermier</option>
     <option value="vendeur">Vendeur</option>
 </select>
-=======
-                    <select name="user_type" id="edit_user_type" required>
-                        <option value="admin">Admin</option>
-                        <option value="user">User</option>
-                    </select>
->>>>>>> 37c0a90981e4f7e7c4f904f49623766305824530
                     <button type="submit" name="edit_user">Save Changes</button>
                     <button type="button" onclick="closeEditForm()">Cancel</button>
                 </form>
             </div>
-<<<<<<< HEAD
 
             <!-- JavaScript for Modal -->
             <script>
@@ -259,37 +403,6 @@ $users = $controller->listUser();
     margin-bottom: 20px;
 }
 
-=======
-
-            <!-- JavaScript for Modal -->
-            <script>
-                function openEditForm(user) {
-                    document.getElementById('edit_user_id').value = user.id; // Set user ID
-                    document.getElementById('edit_name').value = user.name; 
-                    document.getElementById('edit_email').value = user.email; 
-                    document.getElementById('edit_user_type').value = user.user_type; 
-                    document.getElementById('edit_password').value = ''; // Clear password field
-                    document.getElementById('editModal').style.display = 'block';
-                }
-
-                function closeEditForm() {
-                    document.getElementById('editModal').style.display = 'none';
-                }
-            </script>
-
-        </div>
-    </div>
-
-    <script src="fonction.js"></script>
-    <style>
-       h1 {
-    font-size: 28px;
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-}
-
->>>>>>> 37c0a90981e4f7e7c4f904f49623766305824530
 table td button {
     padding: 6px 12px;
     font-size: 14px;
@@ -469,9 +582,49 @@ tbody tr td[colspan="5"] {
     margin-left: 10px;
     font-weight: bold;
 }
+/* Hide the dropdown by default */
+.messages {
+    position: relative;
+    display: inline-block;
+}
 
+#emailIcon {
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+}
+
+.dropdown-content {
+    display: none; /* Initially hidden */
+    position: absolute;
+    top: 30px; /* Adjust to position the dropdown below the icon */
+    left: 0;
+    background-color: #f9f9f9;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 1;
+}
+
+.dropdown-content h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.dropdown-content ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-content ul li {
+    font-size: 14px;
+    margin: 5px 0;
+    color: #555;
+}
     </style>
-<<<<<<< HEAD
     
 
 </style>
@@ -492,7 +645,11 @@ function toggleDarkMode() {
     }
 }
 </script>
-=======
->>>>>>> 37c0a90981e4f7e7c4f904f49623766305824530
+<script>
+    document.querySelector('.messages img').addEventListener('click', function() {
+        var dropdown = document.querySelector('.dropdown-content');
+        dropdown.style.display = (dropdown.style.display === 'block' ? 'none' : 'block');
+    });
+</script>
 </body>
 </html>

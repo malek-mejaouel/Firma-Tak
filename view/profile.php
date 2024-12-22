@@ -1,170 +1,182 @@
-<<<<<<< HEAD
 <?php
 session_start();
-
-// Check if the user is logged in as admin
-if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'admin') {
-    header("Location: log.php"); // Redirect to login if not authorized
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php"); // Redirect to login page if user is not logged in
     exit();
 }
 
-// Retrieve admin information from the session
-$admin = $_SESSION['user'];
+$user = $_SESSION['user']; // Get user data from session
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Profile</title>
+    <title>FIRMA TAK</title>
     <style>
+        /* General Body Styles */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-        }
-        .profile-container {
-            max-width: 600px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .profile-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .profile-header h1 {
-            font-size: 24px;
+            background-color: #f4f6f9;
             color: #333;
         }
-        .profile-info {
-            margin: 10px 0;
-            font-size: 16px;
+
+        /* Header */
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
         }
-        .profile-info label {
-            font-weight: bold;
-            display: inline-block;
-            width: 150px;
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
         }
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 15px;
-            background: #6b7908;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
+
+        /* Profile Container */
+        .profile-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .profile-card {
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            padding: 30px;
             text-align: center;
         }
-        .back-button:hover {
-            background: #5a6907;
+
+        .profile-card img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #4CAF50;
+        }
+
+        .profile-card h2 {
+            margin: 20px 0;
+            color: #4CAF50;
+        }
+
+        .profile-card p {
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .upload-section label {
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .upload-section input[type="file"] {
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .upload-section button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1em;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-section button:hover {
+            background-color: #45a049;
+        }
+
+        /* Return Button */
+        .return-button {
+            margin-top: 20px;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1em;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .return-button:hover {
+            background-color: #555;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 30px;
+        }
+
+        footer p {
+            margin: 0;
         }
     </style>
 </head>
 <body>
-    <div class="profile-container">
-        <div class="profile-header">
-            <h1>Admin Profile</h1>
-        </div>
-        <div class="profile-info">
-            <p><label>Name:</label> <?php echo htmlspecialchars($admin['name']); ?></p>
-            <p><label>Email:</label> <?php echo htmlspecialchars($admin['email']); ?></p>
-            <p><label>User Type:</label> <?php echo htmlspecialchars($admin['user_type']); ?></p>
-        </div>
-        <form action="upload.php" method="post" enctype="multipart/form-data">
-    <label for="file">Upload an image:</label>
-    <input type="file" name="file" id="file" accept="image/*" required>
-    <button type="submit" name="upload">Upload</button>
-</form>
-        <a href="dashboard.php" class="back-button">Back to Dashboard</a>
-    </div>
-</body>
-=======
-<?php
-session_start();
 
-// Check if the user is logged in as admin
-if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'admin') {
-    header("Location: log.php"); // Redirect to login if not authorized
-    exit();
-}
+    <!-- Header Section -->
+    <header>
+        <h1>FRIMA-TAK PROFILE</h1>
+    </header>
 
-// Retrieve admin information from the session
-$admin = $_SESSION['user'];
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Profile</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-        .profile-container {
-            max-width: 600px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .profile-header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .profile-header h1 {
-            font-size: 24px;
-            color: #333;
-        }
-        .profile-info {
-            margin: 10px 0;
-            font-size: 16px;
-        }
-        .profile-info label {
-            font-weight: bold;
-            display: inline-block;
-            width: 150px;
-        }
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 15px;
-            background: #6b7908;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
-            text-align: center;
-        }
-        .back-button:hover {
-            background: #5a6907;
-        }
-    </style>
-</head>
-<body>
+    <!-- Profile Section -->
     <div class="profile-container">
-        <div class="profile-header">
-            <h1>Admin Profile</h1>
+        <div class="profile-card">
+            <h2>Welcome, <?php echo htmlspecialchars($user['name']); ?></h2>
+            
+            <!-- Display Profile Picture -->
+            <div>
+                <h3>Profile Picture</h3>
+                <?php if (!empty($user['profile_picture'])): ?>
+                    <img src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile Picture">
+                <?php else: ?>
+                    <p>No profile picture uploaded.</p>
+                <?php endif; ?>
+            </div>
+
+            <!-- Form for uploading a new profile picture -->
+            <div class="upload-section">
+                <form action="upload.php" method="POST" enctype="multipart/form-data">
+                    <label for="file">Upload New Profile Picture:</label>
+                    <input type="file" name="file" id="file" required>
+                    <button type="submit" name="upload">Upload</button>
+                </form>
+            </div>
+
+            <!-- Return to Dashboard Button -->
+            <a href="dashboard.php" class="return-button">Return to Dashboard</a>
         </div>
-        <div class="profile-info">
-            <p><label>Name:</label> <?php echo htmlspecialchars($admin['name']); ?></p>
-            <p><label>Email:</label> <?php echo htmlspecialchars($admin['email']); ?></p>
-            <p><label>User Type:</label> <?php echo htmlspecialchars($admin['user_type']); ?></p>
-        </div>
-        <form action="upload.php" method="post" enctype="multipart/form-data">
-    <label for="file">Upload an image:</label>
-    <input type="file" name="file" id="file" accept="image/*" required>
-    <button type="submit" name="upload">Upload</button>
-</form>
-        <a href="dashboard.php" class="back-button">Back to Dashboard</a>
     </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 FIRMA-TAK. All rights reserved.</p>
+    </footer>
+
 </body>
->>>>>>> 37c0a90981e4f7e7c4f904f49623766305824530
 </html>

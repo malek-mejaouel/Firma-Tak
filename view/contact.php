@@ -1,201 +1,182 @@
+<?php
+session_start();
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php"); // Redirect to login page if user is not logged in
+    exit();
+}
+
+$user = $_SESSION['user']; // Get user data from session
+?>
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <!-- basic -->
-      <meta charset="utf-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <!-- mobile metas -->
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-      <!-- site metas -->
-      <title>Agropro</title>
-      <meta name="keywords" content="">
-      <meta name="description" content="">
-      <meta name="author" content="">
-      <!-- bootstrap css -->
-      <link rel="stylesheet" href="css/bootstrap.min.css">
-      <!-- style css -->
-      <link rel="stylesheet" href="css/style.css">
-      <!-- Responsive-->
-      <link rel="stylesheet" href="css/responsive.css">
-      <!-- fevicon -->
-      <link rel="icon" href="images/fevicon.png" type="image/gif" />
-      <!-- Tweaks for older IEs-->
-      <link rel="stylesheet" href="css/owl.carousel.min.css">
-      <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
-      <link rel="stylesheet" href="css/bootstrap-datepicker.min.css">
-      <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
-   </head>
-   <!-- body -->
-   <body class="main-layout inner_page">
-      <!-- loader  -->
-      <div class="loader_bg">
-         <div class="loader"><img src="images/loading.gif" alt="#"/></div>
-      </div>
-      <!-- end loader -->
-      <div class="full_bg">
-         <!-- header -->
-         <header class="header-area">
-            <div class="container-fluid">
-               <div class="row d_flex">
-                  <div class=" col-md-2 col-sm-3">
-                     <div class="logo">
-                        <a href="index.html">Agro<span>Pro</span></a>
-                     </div>
-                  </div>
-                  <div class="col-md-8 col-sm-9">
-                     <div class="navbar-area">
-                        <nav class="site-navbar">
-                           <ul>
-                              <li><a href="index.html">Home</a></li>
-                              <li><a href="about.html">About</a></li>
-                              <li><a href="service.html">Service</a></li>
-                               <li><a href="Javascript:void(0)">Projects</a></li>
-                                <li><a href="testimonail.html">Testimonail</a></li>
-                              <li><a href="blog.html">Blog</a></li>
-                              <li><a class="active" href="contact.html">Contact</a></li>
-                           </ul>
-                           <button class="nav-toggler">
-                           <span></span>
-                           </button>
-                        </nav>
-                     </div>
-                  </div>
-                  <div class="col-md-2 padd_0 d_none">
-                     <ul class="email text_align_right">
-                        <li><a href="Javascript:void(0)">Login</a>
-                        </li>
-                        <li><a href="Javascript:void(0)"><i class="fa fa-search" aria-hidden="true"></i>
-                           </a>
-                        </li>
-                     </ul>
-                  </div>
-               </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIRMA TAK</title>
+    <style>
+        /* General Body Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+
+        /* Header */
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+
+        /* Profile Container */
+        .profile-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .profile-card {
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .profile-card img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #4CAF50;
+        }
+
+        .profile-card h2 {
+            margin: 20px 0;
+            color: #4CAF50;
+        }
+
+        .profile-card p {
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+
+        .upload-section label {
+            display: block;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .upload-section input[type="file"] {
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .upload-section button {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 1em;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .upload-section button:hover {
+            background-color: #45a049;
+        }
+
+        /* Return Button */
+        .return-button {
+            margin-top: 20px;
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1em;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .return-button:hover {
+            background-color: #555;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            margin-top: 30px;
+        }
+
+        footer p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header>
+        <h1>FRIMA-TAK PROFILE</h1>
+    </header>
+
+    <!-- Profile Section -->
+    <div class="profile-container">
+        <div class="profile-card">
+            <h2>Welcome, <?php echo htmlspecialchars($user['name']); ?></h2>
+            
+            <!-- Display Profile Picture -->
+            <div>
+                <h3>Profile Picture</h3>
+                <?php if (!empty($user['profile_picture'])): ?>
+                    <img src="<?php echo htmlspecialchars($user['profile_picture']); ?>" alt="Profile Picture">
+                <?php else: ?>
+                    <p>No profile picture uploaded.</p>
+                <?php endif; ?>
             </div>
-         </header>
-         <!-- end header inner -->
-      </div>
-      <!-- contact -->
-      <div class="contact">
-         <div class="container">
-            <div class="row">
-               <div class="col-md-12 ">
-                  <div class="titlepage text_align_center">
-                     <span>Our Contact</span>
-                     <h2>Requste A Call Back</h2>
-                  </div>
-               </div>
-               <div class="col-md-8 offset-md-2">
-                  <form id="request" class="main_form">
-                     <div class="row">
-                        <div class="col-md-12 ">
-                           <input class="form_control" placeholder="Your Name" type="type" name=" Name"> 
-                        </div>
-                        <div class="col-md-12">
-                           <input class="form_control" placeholder="Phone Number" type="type" name="Phone Number">                          
-                        </div>
-                          <div class="col-md-12">
-                           <input class="form_control" placeholder="Your Email" type="type" name="Email">                          
-                        </div>
-                        <div class="col-md-12">
-                           <input class="textarea" placeholder="Message" type="type" name="message"> 
-                        </div>
-                        <div class="col-md-12">
-                           <div class="group_btn">
-                           <button class="send_btn">Send</button>
-                            <button class="send_btn">location</button>
-                         </div>
-                        </div>
-                     </div>
-                  </form>
-               </div>
+
+            <!-- Form for uploading a new profile picture -->
+            <div class="upload-section">
+                <form action="uploadone.php" method="POST" enctype="multipart/form-data">
+                    <label for="file">Upload New Profile Picture:</label>
+                    <input type="file" name="file" id="file" required>
+                    <button type="submit" name="upload">Upload</button>
+                </form>
             </div>
-         </div>
-          <div class="map-responsive">
-            <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&amp;q=Eiffel+Tower+Paris+France" width="600" height="430" frameborder="0" style="border:0; width: 100%;" allowfullscreen=""></iframe>
-         </div>
-      </div>
-      <!-- end contact -->
-      <!--  footer -->
-      <footer>
-         <div class="footer">
-            <div class="container">
-               <div class="row">
-                         <div class="col-lg-3 col-md-6">
-                           <div class="hedingh3  text_align_left">
-                              <h3>Newsletter</h3>
-                              <form id="colof" class="form_subscri">
-                                 <input class="newsl" placeholder="Enter Email" type="text" name="Email">
-                                 <button class="subsci_btn"><img src="images/new.png" alt="#"/></button>
-                              </form>
-                              
-                           </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6">
-                           <div class="hedingh3 text_align_left">
-                              <h3> Explore</h3>
-                              <ul class="menu_footer">
-                                 <li><a href="index.html">Home</a></li>
-                                 <li><a href="about.html">About</a></li>
-                                 <li><a href="service.html">Service</a></li>
-                                 <li><a href="Javascript:void(0)">Projects</a></li>
-                                 <li><a href="testimonail.html">Testimonail</a></li>
-                                 <li><a href="contact.html">Contact us</a></li>
-                              </ul>
-                           </div>
-                        </div>
-                        <div class="col-lg-3 col-md-6">
-                           <div class="hedingh3 text_align_left">
-                              <h3>Recent Posts</h3>
-                              <ul class="recent">
-                                 <li><img src="images/resent.jpg" alt="#"/>ea commodo consequat. Duis aute </li>
-                                 <li><img src="images/resent.jpg" alt="#"/>ea commodo consequat. Duis aute </li>
-                              </ul>
-                           </div>
-                        </div>
-                         <div class="col-lg-3 col-md-6">
-                           <div class="hedingh3  flot_right text_align_left">
-                              <h3>ContacT</h3>
-                              <ul class="top_infomation">
-                                 <li><i class="fa fa-phone" aria-hidden="true"></i>
-                                    +01 1234567892
-                                 </li>
-                                 <li><i class="fa fa-envelope" aria-hidden="true"></i>
-                                    <a href="Javascript:void(0)">demo@gmail.com</a>
-                                 </li>
-                              </ul>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-             
-            <div class="copyright">
-               <div class="container">
-                  <div class="row d_flex">
-                     <div class="col-md-8">
-                        <p>© 2022 All Rights Reserved. Design by <a href="https://html.design/"> Free html Templates</a></p>
-                     </div>
-                     <div class="col-md-4">
-                           <ul class="social_icon ">
-                              <li><a href="Javascript:void(0)"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                              <li><a href="Javascript:void(0)"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                              <li><a href="Javascript:void(0)"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
-                           </ul>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </footer>
-      <!-- end footer -->
-      <!-- Javascript files-->
-      <script src="js/jquery.min.js"></script>
-      <script src="js/bootstrap.bundle.min.js"></script>
-      <script src="js/jquery-3.0.0.min.js"></script>
-      <script src="js/owl.carousel.min.js"></script>
-      <script src="js/bootstrap-datepicker.min.js"></script>
-      <script src="js/custom.js"></script>
-   </body>
+
+            <!-- Return to Dashboard Button -->
+            <a href="index.php" class="return-button">Return to home</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 FIRMA-TAK. All rights reserved.</p>
+    </footer>
+
+</body>
 </html>

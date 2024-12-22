@@ -65,7 +65,7 @@ echo "Welcome to the User Home Page, " . $_SESSION['user']['name'] . "!";
                               <li><a href="about.html">About</a></li>
                               <li><a href="services/service.html">Service</a></li>
                                <li><a href="Javascript:void(0)">Projects</a></li>
-                                <li><a href="news/map.html">Map</a></li>
+                                <li><a href="template/news/map.html">Map</a></li>
                               <li><a href="news/news.html">Blog</a></li>
                               <li><a href="contact.html">Contact</a></li>
                            </ul>

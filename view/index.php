@@ -8,7 +8,64 @@ if (!isset($_SESSION['user'])) {
 }
 
 echo "Welcome to the User Home Page, " . $_SESSION['user']['name'] . "!";
-?>
+// Inclure le fichier nécessaire pour récupérer les publications
+include '../controller/PublicationC.php';  
+
+// Créer une instance du contrôleur des publications
+$c = new PublicationC();
+
+// Définir le nombre de publications par page
+$limit = 3;
+
+// Récupérer la page actuelle
+$page = isset($_GET['page']) ? $_GET['page'] : 1;
+
+// Vérifier si le tri par titre est demandé
+$sortOrder = isset($_GET['sort']) && $_GET['sort'] == 'title' ? 'ASC' : 'DESC';
+
+// Récupérer le terme de recherche
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+// Gérer la recherche et la pagination
+if (!empty($search)) {
+    // Si une recherche est effectuée
+    $result = $c->searchPublications($search, $page, $limit);
+    $publications = $result['publications'];
+    $totalPublications = $result['total'];
+} else {
+    // Code existant pour afficher toutes les publications
+    $totalPublications = $c->countPublications();
+    $publications = $c->listPublicationsByPageAndSort($page, $limit, $sortOrder);
+}
+
+$totalPages = ceil($totalPublications / $limit);
+
+// S'assurer que la page actuelle est valide
+if ($page < 1) $page = 1;
+if ($page > $totalPages) $page = $totalPages;
+if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+    $fermier = $_SESSION['user'];  // Get the admin's profile data
+
+    // Get the user's profile picture (if any)
+    $profilePicture = !empty($fermier['profile_picture']) ? $fermier['profile_picture'] : 'default_profile_picture.png'; // Provide a default image if none exists
+
+    // You can now use $profilePicture and other session data
+} else {
+    // Handle case where session is not properly set
+    echo "No user session found.";
+}
+
+ 
+   // Now you can call getRecentUser
+
+    // Check if session messages exist and are an array
+    
+    $admin = $_SESSION['user']; 
+
+    // Get the user's profile picture (if any)
+    $profilePicture = !empty($fermier['profile_picture']) ? $fermier['profile_picture'] : 'uploads/default.jpg'; // Default profile picture if none set
+    ?>
+    
 <!DOCTYPE html>
 <html lang="en">
    <head>
@@ -63,12 +120,12 @@ echo "Welcome to the User Home Page, " . $_SESSION['user']['name'] . "!";
                            <ul>
 
                               <li><a class="active" href="index.html">Home</a></li>
-                              <li><a href="about.html">About</a></li>
+                              <li><a href="about.php">feedbackmessage</a></li>
                               <li><a href="services/service.html">Service</a></li>
-                               <li><a href="Javascript:void(0)">Projects</a></li>
-                                <li><a href="news/map.html">Map</a></li>
+                               <li><a href="listEvents.php">Projects</a></li>
+                                <li><a href="rating.php">rate-firma-tak</a></li>
                               <li><a href="news/news.html">Blog</a></li>
-                              <li><a href="contact.html">Contact</a></li>
+                              <li><a href="contact.php">Contact</a></li>
                               <li><button id="darkModeButton" onclick="toggleDarkMode()">🌙</button></li>
 
                            </ul>
@@ -90,16 +147,21 @@ echo "Welcome to the User Home Page, " . $_SESSION['user']['name'] . "!";
             </p>
            
             <div class="img-case">
-            <a href="profileuser.php">
-    <img src="images/user.png" alt="Profile" class="small-profile">
-</a>
+            <img src="<?php echo htmlspecialchars($profilePicture); ?>" alt="Profile Picture" style="max-width: 150px;">
+                    </div>
+                 
+                <?php
+                if (isset($_SESSION['user']) && $_SESSION['user']['user_type'] === 'admin') {
+                    
+                    echo " " . htmlspecialchars($_SESSION['user']['name']);
+                    
+                }
+                ?>
+    
 <a href="logout.php" class="btn btn-danger">Logout</a>
 
                     </div>
-                        </li>
-                        <li><a href="Javascript:void(0)"><i class="fa fa-search" aria-hidden="true"></i>
-                           </a>
-                        </li>
+                     
                      </ul>
                   </div>
                </div>
@@ -140,9 +202,9 @@ echo "Welcome to the User Home Page, " . $_SESSION['user']['name'] . "!";
                                  <div class="carousel-item">
                                     <picture>
                                        <source srcset="images/banner.jpg" >
-                                       <source srcset="images/banner.jpg" >
-                                       <source srcset="images/banner.jpg" >
-                                       <img srcset="images/banner.jpg" alt="responsive image" class="d-block img-fluid">
+                                       <source srcset="images/ban.jpg" >
+                                       <source srcset="images/bani.jpg" >
+                                       <img srcset="images/ban.jpg" alt="responsive image" class="d-block img-fluid">
                                     </picture>
                                     <div class="carousel-caption relative">
                                        
@@ -176,321 +238,108 @@ echo "Welcome to the User Home Page, " . $_SESSION['user']['name'] . "!";
       
                    
       <!-- end about -->
-      <!-- services -->
-      <div class="services">
-         <div class="container">
-            <div class="row">
-               <div class="col-md-12">
-                  <div class="titlepage text_align_left">
-                     <span>What We Do</span>
-                         <h2>SERVICES WE OFFER</h2>
-                  </div>
-               </div>
+      <div class="container mt-5">
+    <h2 class="text-center mb-4">Latest Publications 📰</h2>
+
+    <!-- Search and Sort Section -->
+    <div class="mb-4 text-center">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Search Form -->
+                <form action="" method="get" class="mb-3">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" 
+                               placeholder="Search by title..." 
+                               value="<?php echo htmlspecialchars($search); ?>">
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">
+                                🔍 Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Sort Button -->
+                <form action="" method="get" class="mb-3">
+                    <button type="submit" name="sort" value="title" class="btn btn-outline-info btn-sm">
+                        Sort by Title
+                    </button>
+                </form>
             </div>
-            <div class="row">
-               <div class="col-md-4">
-                  <div class="services_box_main">
-                     <div  class="services_box text_align_left">
-                          <figure><img src="images/service1.jpg" alt="#"/></figure>
-                        <div class="veget">
-                           <h3>FRESH<br>VEGETABLES</h3>
-                           <p>sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip</p>
+        </div>
+    </div>
+
+    <?php if (!empty($publications)) { ?>
+        <div class="row">
+            <?php foreach ($publications as $publication) { ?>
+                <div class="col-md-4 mb-4">
+                    <!-- Publication Card -->
+                    <div class="card shadow-sm border-light">
+                        <div class="card-body">
+                            <!-- Publication Title -->
+                            <h5 class="card-title text-primary"><?php echo htmlspecialchars($publication['Titre']); ?></h5>
+                            
+                            <!-- Publication Content -->
+                            <p class="card-text"><?php echo nl2br(htmlspecialchars($publication['Contenu'])); ?></p>
+                            
+                            <!-- Publication Info Section -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="text-muted small">Published on: <?php echo date('F j, Y', strtotime($publication['Date'])); ?></p>
+                            </div>
+
+                            <!-- Action Buttons Section -->
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <!-- Read More Button -->
+                                <a href="<?= htmlspecialchars($publication['Lien']); ?>" class="btn btn-outline-secondary btn-sm w-100 mb-2">Read More 📖</a>
+
+                                <!-- Download PDF Button -->
+                                <a href="generatePDF.php?id=<?php echo $publication['ID']; ?>" class="btn btn-outline-danger btn-sm w-100 mb-2">📥 PDF</a>
+
+                                <!-- Add Comment Button -->
+                                <a href="ajoutercommentaire.php?id=<?php echo $publication['ID']; ?>" class="btn btn-outline-success btn-sm w-100 mb-2">➕ Add Comment</a>
+
+                                <!-- View Comments Button -->
+                                <a href="affichercommentaire.php?id=<?php echo $publication['ID']; ?>" class="btn btn-outline-primary btn-sm w-100 mb-2">💬 View Comments</a>
+                            </div>
                         </div>
-                     </div>
-                     <a class="read_more" href="services.html">Read More</a>
-                  </div>
-               </div>
-               <div class="col-md-4">
-               <div class="services_box_main">
-                     <div  class="services_box text_align_left">
-                          <figure><img src="images/service2.jpg" alt="#"/></figure>
-                        <div class="veget">
-                           <h3>AGRICULTURE<br>PRODUCTS</h3>
-                           <p>sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip</p>
-                        </div>
-                     </div>
-                     <a class="read_more" href="services.html">Read More</a>
-                  </div>
-               </div>
-               <div class="col-md-4">
-               <div class="services_box_main">
-                     <div  class="services_box text_align_left">
-                          <figure><img src="images/service3.jpg" alt="#"/></figure>
-                        <div class="veget">
-                           <h3>ORGANIC<br>PRODUCTS</h3>
-                           <p>sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip</p>
-                        </div>
-                     </div>
-                     <a class="read_more" href="services.html">Read More</a>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-      <!-- end services -->
-      <!-- customers -->
-      <div class="customers">
-         <div class="clients_bg">
-            <div class="container">
-               <div class="row">
-                  <div class="col-sm-12">
-                     <div class="titlepage text_align_left">
-                         <span>Our Customers</span>
-                         <h2>TESTIMONAILS</h2>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-         <!-- start slider section -->
-         <div id="myCarousel" class="carousel slide clients_banner" data-ride="carousel">
-            <ol class="carousel-indicators">
-               <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-               <li data-target="#myCarousel" data-slide-to="1"></li>
-               <li data-target="#myCarousel" data-slide-to="2"></li>
-            </ol>
-            <div class="carousel-inner">
-               <div class="carousel-item active">
-                  <div class="container">
-                     <div class="carousel-caption relative">
-                        <div class="row d_flex">
-                           <div class="col-md-6">
-                              <div class="custom">
-                                 <div class="d_flex">
-                                    <i><img src="images/customer1.jpg" alt="#"/></i>
-                                    <div class="clint">
-                                      <h4>Dan Balan</h4>
-                                      <span>Client</span>
-                                    </div>
-                                 </div>
-                                  <p>readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their </p>
-                                  <img src="images/test.png" alt="#"/>
-                              </div>
-                           </div>
-                           <div class="col-md-6">
-                              <div class="custom">
-                                 <div class="d_flex">
-                                    <i><img src="images/customer2.jpg" alt="#"/></i>
-                                    <div class="clint">
-                                      <h4>Mor Balan</h4>
-                                      <span>Client</span>
-                                    </div>
-                                 </div>
-                                  <p>readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their </p>
-                                  <img src="images/test.png" alt="#"/>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div class="carousel-item">
-                  <div class="container">
-                     <div class="carousel-caption relative">
-                       <div class="row d_flex">
-                           <div class="col-md-6">
-                              <div class="custom">
-                                 <div class="d_flex">
-                                    <i><img src="images/customer1.jpg" alt="#"/></i>
-                                    <div class="clint">
-                                      <h4>Dan Balan</h4>
-                                      <span>Client</span>
-                                    </div>
-                                 </div>
-                                  <p>readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their </p>
-                                  <img src="images/test.png" alt="#"/>
-                              </div>
-                           </div>
-                           <div class="col-md-6">
-                              <div class="custom">
-                                 <div class="d_flex">
-                                    <i><img src="images/customer2.jpg" alt="#"/></i>
-                                    <div class="clint">
-                                      <h4>Mor Balan</h4>
-                                      <span>Client</span>
-                                    </div>
-                                 </div>
-                                  <p>readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their </p>
-                                  <img src="images/test.png" alt="#"/>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-               <div class="carousel-item">
-                  <div class="container">
-                     <div class="carousel-caption relative">
-                       <div class="row d_flex">
-                           <div class="col-md-6">
-                              <div class="custom">
-                                 <div class="d_flex">
-                                    <i><img src="images/customer1.jpg" alt="#"/></i>
-                                    <div class="clint">
-                                      <h4>Dan Balan</h4>
-                                      <span>Client</span>
-                                    </div>
-                                 </div>
-                                  <p>readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their </p>
-                                  <img src="images/test.png" alt="#"/>
-                              </div>
-                           </div>
-                           <div class="col-md-6">
-                              <div class="custom">
-                                 <div class="d_flex">
-                                    <i><img src="images/customer2.jpg" alt="#"/></i>
-                                    <div class="clint">
-                                      <h4>Mor Balan</h4>
-                                      <span>Client</span>
-                                    </div>
-                                 </div>
-                                  <p>readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their </p>
-                                  <img src="images/test.png" alt="#"/>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
-            <i class="fa fa-angle-left" aria-hidden="true"></i>
-            <span class="sr-only">Previous</span>
-            </a>
-            <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
-            <i class="fa fa-angle-right" aria-hidden="true"></i>
-            <span class="sr-only">Next</span>
-            </a>
-         </div>
-      </div>
-      <!-- end customers -->
-      <!-- choose -->
-      <div class="choose">
-         <div class="container">
-            <div class="row">
-               <div class="col-md-12">
-                  <div class="titlepage text_align_center">
-                     <h2>Whay choose us</h2>
-                  </div>
-               </div>
-            </div>
-            <div class="row">
-               <div class="col-md-3">
-                  <div class="point text_align_center">
-                     <h3>300+</h3>
-                     <span>Regula <br>Customers</span>
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="point text_align_center">
-                     <h3>30+</h3>
-                     <span>Professional <br>Engineering</span>
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="point text_align_center">
-                     <h3>300+</h3>
-                     <span>Points of Sale  <br>Goods</span>
-                  </div>
-               </div>
-               <div class="col-md-3">
-                  <div class="point text_align_center">
-                     <h3>30+</h3>
-                     <span>Awards <br>Won</span>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-      <!-- choose -->
-      <!-- news -->
-      <div class="news">
-         <div class="container">
-            <div class="row">
-               <div class="col-md-12">
-                  <div class="titlepage text_align_left">
-                     <span>Our</span>
-                     <h2>Latest News</h2>
-                  </div>
-               </div>
-            </div>
-            <div class="row">
-               <div class=" col-md-4">
-                  <div class="latest">
-                     <figure><img src="images/news1.jpg" alt="#"/></figure>
-                     <span>15<br>  March</span>
-                     <div class="nostrud">
-                        <h3>Alteration in somer</h3>
-                        <p>has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making iteditors </p>
-                        <a class="read_more" href="news.html">Read More</a>
-                     </div>
-                  </div>
-               </div>
-               <div class=" col-md-4">
-                  <div class="latest box_desho">
-                     <figure><img src="images/news2.jpg" alt="#"/></figure>
-                     <span>15<br> March</span>
-                     <div class="nostrud">
-                        <h3>Alteration in somer</h3>
-                        <p>has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making iteditors </p>
-                        <a class="read_more" href="news.html">Read More</a>
-                     </div>
-                  </div>
-               </div>
-              <div class=" col-md-4">
-                  <div class="latest">
-                     <figure><img src="images/news3.jpg" alt="#"/></figure>
-                     <span>15<br> March</span>
-                     <div class="nostrud">
-                        <h3>Alteration in somer</h3>
-                        <p>has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making iteditors </p>
-                        <a class="read_more" href="news.html">Read More</a>
-                     </div>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-      <!-- end news -->
-      <!-- contact -->
-      <div class="contact">
-         <div class="container">
-            <div class="row">
-               <div class="col-md-12 ">
-                  <div class="titlepage text_align_center">
-                     <span>Our Contact</span>
-                     <h2>Requste A Call Back</h2>
-                  </div>
-               </div>
-               <div class="col-md-8 offset-md-2">
-                  <form id="request" class="main_form">
-                     <div class="row">
-                        <div class="col-md-12 ">
-                           <input class="form_control" placeholder="Your Name" type="type" name=" Name"> 
-                        </div>
-                        <div class="col-md-12">
-                           <input class="form_control" placeholder="Phone Number" type="type" name="Phone Number">                          
-                        </div>
-                       
-                        <div class="col-md-12">
-                           <input class="textarea" placeholder="Message" type="type" name="message"> 
-                        </div>
-                        <div class="col-md-12">
-                           <div class="group_btn">
-                           <button class="send_btn">Send</button>
-                            <button class="send_btn">location</button>
-                         </div>
-                        </div>
-                     </div>
-                  </form>
-               </div>
-            </div>
-         </div>
-          <div class="map-responsive">
-            <iframe src="https://www.google.com/maps/embed/v1/place?key=AIzaSyA0s1a7phLN0iaD6-UE7m4qP-z21pH0eSc&amp;q=Eiffel+Tower+Paris+France" width="600" height="430" frameborder="0" style="border:0; width: 100%;" allowfullscreen=""></iframe>
-         </div>
-      </div>
-      <!-- end contact -->
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+    <?php } else { ?>
+        <p class="text-center">No publications found.</p>
+    <?php } ?>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+            <?php if ($page > 1) { ?>
+                <li class="page-item">
+                    <a class="page-link" href="?page=1&sort=<?php echo $sortOrder; ?>&search=<?php echo urlencode($search); ?>">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<?php echo $page - 1; ?>&sort=<?php echo $sortOrder; ?>&search=<?php echo urlencode($search); ?>">Previous</a>
+                </li>
+            <?php } ?>
+
+            <?php for ($i = 1; $i <= $totalPages; $i++) { ?>
+                <li class="page-item <?php if ($i == $page) echo 'active'; ?>">
+                    <a class="page-link" href="?page=<?php echo $i; ?>&sort=<?php echo $sortOrder; ?>&search=<?php echo urlencode($search); ?>"><?php echo $i; ?></a>
+                </li>
+            <?php } ?>
+
+            <?php if ($page < $totalPages) { ?>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<?php echo $page + 1; ?>&sort=<?php echo $sortOrder; ?>&search=<?php echo urlencode($search); ?>">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<?php echo $totalPages; ?>&sort=<?php echo $sortOrder; ?>&search=<?php echo urlencode($search); ?>">Last</a>
+                </li>
+            <?php } ?>
+        </ul>
+    </div>
+</div>
+
       <!--  footer -->
       <footer>
          <div class="footer">
@@ -587,20 +436,45 @@ body.dark-mode {
     height: 40px;
 }
 
+/* Styling for the profile picture */
+.img-case img {
+    width: 50px; /* Adjust size */
+    height: 50px;
+    border-radius: 50%; /* Make the image circular */
+    border: 2px solid #6b7908; /* Green border */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Add shadow for a professional look */
+    object-fit: cover;
+    margin-right: 10px; /* Add spacing between profile picture and other elements */
+}
+
+/* Styling for the logout button */
 .logout-button {
     text-decoration: none;
-    color: #000; /* Adjust color */
-    font-size: 16px;
-    padding: 5px 10px;
-    border: 1px solid #ccc; /* Optional styling for button */
-    border-radius: 5px; /* Rounded corners */
-    background-color: #6b7908; /* Background color */
+    color: #fff; /* White text for contrast */
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px 15px;
+    border: none; /* Remove border */
+    border-radius: 20px; /* Smooth rounded edges */
+    background-color: #6b7908; /* Green background */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
     cursor: pointer;
+    transition: all 0.3s ease; /* Smooth hover effect */
 }
 
 .logout-button:hover {
-    background-color: #6b7908; /* Change background on hover */
+    background-color: #5a6a07; /* Darker green on hover */
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Deeper shadow */
 }
+
+/* Align profile picture and button horizontally */
+.user {
+    display: flex;
+    align-items: center; /* Align vertically */
+    justify-content: flex-end; /* Align to the right */
+    gap: 10px; /* Space between profile picture and button */
+}
+
 .dark-mode button {
             background-color: #333;
             color: white;
@@ -608,7 +482,7 @@ body.dark-mode {
 
         #darkModeButton {
     position: absolute;
-    top: calc(40px - 1cm); /* Move the button 4 cm up from the initial position */
+    top: calc(40px -3cm); /* Move the button 4 cm up from the initial position */
     right: calc(20px + 1cm); /* Move the button 6 cm to the right */
     background-color: transparent;
     border: none;
@@ -622,7 +496,65 @@ body.dark-mode {
 #darkModeButton:hover {
     transform: scale(1.2);
 }
+ 
+.container {
+            max-width: 1500px;
+        }
 
+        .card {
+            border: none;
+            border-radius: 12px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+    font-family: Arial, sans-serif;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+
+
+
+        .btn-primary {
+            background-color:rgb(40, 106, 20);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color:rgb(110, 162, 99);
+        }
+
+        .pagination .page-link {
+            border-radius: 50px;
+            color:rgb(14, 101, 4);
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color:rgb(13, 172, 24);
+            border-color:rgb(64, 120, 5);
+            color: #fff;
+        }
+
+        h2 {
+            color: #343a40;
+        }
+
+        .card-title {
+            color:rgb(10, 107, 31);
+            font-weight: 600;
+        }
+
+        .card-text {
+            color: #6c757d;
+        }
+    
+    </style>
 </style>
 <script>
     // Toggle Dark Mode
@@ -637,6 +569,7 @@ body.dark-mode {
             button.textContent = '🌙'; // Change to moon emoji when dark mode is inactive
         }
     }
+
 </script>
    </body>
 </html>

@@ -1,0 +1,21 @@
+/* Root variables for themes */
+:root {
+    --background-color: white;
+    --text-color: black;
+    --primary-color: #522ba7;
+    --secondary-color: #fff000;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.5s, color 0.5s;
+}
+
+.dark-mode {
+    --background-color: black;
+    --text-color: white;
+    --primary-color: #28096b;
+    --secondary-color: #fff000;
+}
+

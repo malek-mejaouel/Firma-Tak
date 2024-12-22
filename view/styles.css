@@ -113,32 +113,7 @@ th, td {
     align-items: center;
 }
 
-.container .header .nav .search {
-    flex: 3;
-    display: flex;
-    justify-content: center;
-}
 
-.container .header .nav .search input[type=text] {
-    border: none;
-    background: #f1f1f1;
-    padding: 10px;
-    width: 50%;
-}
-
-.container .header .nav .search button {
-    width: 40px;
-    height: 40px;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.container .header .nav .search button img {
-    width: 30px;
-    height: 30px;
-}
 
 .container .header .nav .user {
     flex: 1;
@@ -287,19 +262,19 @@ th, td {
 /* Dark Mode Global Styles */
 body.dark-mode {
     background-color: #121212; /* Dark background */
-    color: #e0e0e0; /* Light text color */
+    color: #254a1b; /* Light text color */
 }
 
 body.dark-mode h1, 
 body.dark-mode h2, 
 body.dark-mode h3 {
-    color: #e0e0e0; /* Light color for headers */
+    color: #22412e; /* Light color for headers */
 }
 
 /* Buttons */
 body.dark-mode .btn {
     background: #4b6b3f; /* Darker button background */
-    color: white;
+    color: rgb(48, 78, 51);
 }
 
 body.dark-mode .btn:hover {
@@ -314,7 +289,7 @@ body.dark-mode .side-menu {
 }
 
 body.dark-mode .side-menu li:hover {
-    background: #444; /* Dark hover effect */
+    background: #4c7c2e; /* Dark hover effect */
     color: #6b7908;
 }
 
@@ -337,7 +312,7 @@ body.dark-mode td {
 
 /* Content */
 body.dark-mode .container .content {
-    background: #1e1e1e; /* Dark content area */
+    background: #28652d; /* Dark content area */
 }
 
 

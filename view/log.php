@@ -102,6 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -137,7 +138,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <option value="" disabled selected>Select your type</option>
             <option value="fermier">Fermier</option>
             <option value="vendeur">Vendeur</option>
-            <option value="admin">Admin</option> <!-- Option added for admin -->
+
+           <!-- Option added for admin -->
         </select>
             <span>Use your email to register</span>
             <input type="text" name="name" placeholder="Name" required>
@@ -160,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
             <div class="forgot-password">
-            <a href="reset_password.php">Forgot Password?</a></div>
+            <a href="forgot-password.php">Forgot Password?</a></div>
 
             <input type="submit" name="submit_login" value="Sign In">
         </form>

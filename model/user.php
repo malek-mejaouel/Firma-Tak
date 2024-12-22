@@ -47,7 +47,9 @@ class User {
         $stmt = $this->conn->prepare($query);  
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
     }
+    
     public function deleteUser($userId) {
         // Prepare SQL query to delete a user by ID
         $query = "DELETE FROM {$this->table} WHERE id = :id";
@@ -58,6 +60,7 @@ class User {
     
         // Execute the query and return true if successful, false otherwise
         return $stmt->execute();
+
     }
     public function updateUser($userId, $name, $email, $hashedPassword, $userType) {
         // Base query
@@ -85,7 +88,41 @@ class User {
         // Execute the query
         return $stmt->execute();
     }
+    
+    public function searchUser($term) {
+        try {
+            // Requête SQL pour rechercher par nom ou email
+            $query = "SELECT * FROM user WHERE name LIKE :term OR email LIKE :term";
+            $stmt = $this->conn->prepare($query); // Utilisez $this->conn ici
+            $stmt->bindValue(':term', '%' . $term . '%'); // Recherche avec un wildcard
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC); // Récupérer tous les résultats sous forme de tableau
+        } catch (PDOException $e) {
+            error_log("Error while searching user: " . $e->getMessage());
+            return []; // Retourne un tableau vide si erreur
+        }
     }
+    // Update profile picture
+    public function updateProfilePicture($userId, $imagePath) {
+        // Prepare SQL query to update profile_picture in the user table
+        $query = "UPDATE user SET profile_picture = :profile_picture WHERE id = :user_id";
+        $stmt = $this->conn->prepare($query);
+
+        // Bind parameters
+        $stmt->bindParam(':profile_picture', $imagePath);
+        $stmt->bindParam(':user_id', $userId);
+
+        // Execute query
+        return $stmt->execute();
+    }
+    public function getRecentlyAddedUser() {
+        $query = "SELECT * FROM user ORDER BY created_at DESC LIMIT 1";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+    
+        return $stmt->fetch(PDO::FETCH_ASSOC);  // Should return user data or null if no data
+    }
+    }?>
 
 
     

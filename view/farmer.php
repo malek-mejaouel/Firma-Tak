@@ -122,14 +122,14 @@ $statistics = getUserStatistics($db);
 
         canvas {
             max-width: 100%;
-            height: 400px;
+            height: 300px; /* Adjusted for smaller size */
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>User Statistics - Agricultural Society 🌾</h1>
+    <h1>User Statistics - Firma-Tak 🌾</h1>
 
     <div class="statistics">
         <h2>Our Community Members</h2>
@@ -150,7 +150,7 @@ $statistics = getUserStatistics($db);
 
     <!-- Chart Section -->
     <div class="canvas-container">
-        <canvas id="userChart" width="400" height="200"></canvas>
+        <canvas id="userChart" width="300" height="300"></canvas>
     </div>
 </div>
 
@@ -175,6 +175,7 @@ $statistics = getUserStatistics($db);
         data: userData,
         options: {
             responsive: true,
+            maintainAspectRatio: false, // Allow custom dimensions
             plugins: {
                 legend: {
                     position: 'top',
